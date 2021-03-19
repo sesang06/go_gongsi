@@ -9,9 +9,10 @@ import (
 )
 
 const (
-	money = 10000
+	money          = 10000
 	sleep_duration = time.Second * 30
 )
+
 func CalDiff(original, new []NoticePost) []NoticePost {
 	if len(new) == 0 {
 		var emptyObject []NoticePost
@@ -39,22 +40,21 @@ func CalDiff(original, new []NoticePost) []NoticePost {
 	}
 	return diffObject
 
-
 }
 
 type Result struct {
-	err error
+	err   error
 	value []NoticePost
 }
 
 type UnknownError struct {
-
 }
+
 func (e *UnknownError) Error() string {
 	return "POST IS NILL"
 }
 
-func DownloadFile(url string) <- chan Result {
+func DownloadFile(url string) <-chan Result {
 	out := make(chan Result)
 	go func() {
 		defer close(out)
@@ -91,7 +91,6 @@ func DownloadFile(url string) <- chan Result {
 			}
 			object := NoticeObject{}
 
-
 			jsonErr := json.Unmarshal(body, &object)
 
 			if jsonErr != nil {
@@ -126,7 +125,7 @@ func startCrawling() {
 	const url = "https://project-team.upbit.com/api/v1/disclosure?region=kr&per_page=10"
 	var resultOut Result
 	for true {
-		resultOut := <- DownloadFile(url)
+		resultOut := <-DownloadFile(url)
 		if resultOut.err != nil {
 			fmt.Println(resultOut.err)
 		} else {
@@ -139,14 +138,14 @@ func startCrawling() {
 	var has_error_occured = false
 	upbitTrader := NewUpbitTrader()
 	for true {
-		time.Sleep(time.Millisecond * 3000)
-		newPostResult := <- DownloadFile(url)
+		time.Sleep(time.Millisecond * 2000)
+		newPostResult := <-DownloadFile(url)
 		if newPostResult.err != nil {
 			if has_error_occured {
 				continue
 			}
 			has_error_occured = true
-			SendMessage("공시(Go) ERROR\n" + newPostResult.err.Error() )
+			SendMessage("공시(Go) ERROR\n" + newPostResult.err.Error())
 			continue
 		}
 		newPosts := newPostResult.value
@@ -155,7 +154,8 @@ func startCrawling() {
 			continue
 		}
 		diff := CalDiff(current, newPosts)
-		if len(diff) > 0 {
+		diffLen := len(diff)
+		if diffLen > 0 && diffLen != 10 {
 			startTrading(upbitTrader, diff)
 		}
 
@@ -176,8 +176,6 @@ func startCrawling() {
 		current = newPosts
 	}
 }
-
-
 
 func main() {
 	startCrawling()

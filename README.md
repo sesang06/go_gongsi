@@ -1,5 +1,10 @@
 # go_gongsi
 
+Written by Golang.
+As soon as a cryptocurrency trade site upload a new notice,
+it bought the related cryptocurrency, to earn any arbitrage.
+Currently the site stopped to upload a new notice: It has no value to make profit now.
+
 go lang을 이용해서 
 업비트 공시가 뜨면,
 빠르게 매수후 매도하여

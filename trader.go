@@ -86,7 +86,7 @@ func (upbitTrader UpbitTrader) buyAndSell(ticker string, money int, duration tim
 func (upbitTrader UpbitTrader) getLimitSell(ticker string) {
 	balance, avgPricestr := upbitTrader.getBalanceAndAvgBuyPrice(ticker)
 	avgPriceFloat, _ := strconv.ParseFloat(avgPricestr, 64)
-	price := fmt.Sprintf("%f", getTickerSize(avgPriceFloat*1.05))
+	price := fmt.Sprintf("%f", getTickerSize(avgPriceFloat*1.10))
 	fmt.Println(price)
 	fmt.Println(balance)
 	_, _, err := upbitTrader.upbit.SellOrder(ticker, balance, price, "limit", "")
